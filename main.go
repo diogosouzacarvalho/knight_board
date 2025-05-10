@@ -3,10 +3,16 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/diogosouzacarvalho/knight_board/internal/models"
+	"github.com/diogosouzacarvalho/knight_board/pkg/config"
 )
 
 func main() {
-	fmt.Println("main.go")
+	board, err := config.GetBoard(os.Getenv(models.BOARD_API))
+	if err != nil {
+		panic(err)
+	}
 
-	fmt.Printf("Env var test: %s", os.Getenv("test"))
+	fmt.Println(board)
 }
