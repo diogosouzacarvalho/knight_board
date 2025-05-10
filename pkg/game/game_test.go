@@ -1,4 +1,4 @@
-package main_test
+package game_test
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	"github.com/diogosouzacarvalho/knight_board/pkg/game"
 )
 
-func TestMain(t *testing.T) {
+func TestGameInit(t *testing.T) {
 	client := &client.MockClient{}
 	game := game.NewGame(client)
 

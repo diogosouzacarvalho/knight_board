@@ -1,28 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/diogosouzacarvalho/knight_board/internal/models"
 	"github.com/diogosouzacarvalho/knight_board/pkg/client"
+	"github.com/diogosouzacarvalho/knight_board/pkg/game"
 )
 
 func main() {
-	var (
-		board    models.Board
-		commands models.Commands
-		err      error
-	)
 	client := client.NewStorageClient(os.Getenv(models.BOARD_API), os.Getenv(models.COMMANDS_API))
+	game := game.NewGame(client)
 
-	if board, err = client.GetBoard(); err != nil {
+	if err := game.Init(); err != nil {
 		panic(err)
 	}
-	if commands, err = client.GetCommands(); err != nil {
-		panic(err)
-	}
-
-	fmt.Println(board)
-	fmt.Println(commands)
 }
