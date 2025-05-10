@@ -75,3 +75,94 @@ func TestStartPosition(t *testing.T) {
 		t.Fatalf("expected error, got nil")
 	}
 }
+
+func TestMove(t *testing.T) {
+	client := &MockClient{}
+	board := models.Board{
+		Width:  10,
+		Height: 10,
+		Obstacles: []models.Coordinate{
+			{X: 5, Y: 7},
+		},
+	}
+	client.SetBoard(board)
+	commands := []string{
+		"START 1,0,NORTH",
+		"MOVE 1",
+	}
+	client.SetCommands(commands)
+	g := game.NewGame(client)
+
+	if err := g.Init(); err != nil {
+		t.Fatalf("got error on init: %s", err)
+	}
+	if err := g.SetStartingPosition("START 1,0,NORTH"); err != nil {
+		t.Fatalf("expected nil error, got: %s", err)
+	}
+	if err := g.DoMove("1"); err != nil {
+		t.Fatalf("expected nil error, got: %s", err)
+	}
+	expectedPosition := models.Coordinate{X: 1, Y: 1}
+	if g.GetCurrentPosition() != expectedPosition {
+		t.Fatalf("expected pos %+v, got: %+v", expectedPosition, g.GetCurrentPosition())
+	}
+}
+
+func TestMoveObstacle(t *testing.T) {
+	client := &MockClient{}
+	board := models.Board{
+		Width:  10,
+		Height: 10,
+		Obstacles: []models.Coordinate{
+			{X: 1, Y: 1},
+			{X: 5, Y: 7},
+		},
+	}
+	client.SetBoard(board)
+	commands := []string{
+		"START 1,0,NORTH",
+		"MOVE 4",
+	}
+	client.SetCommands(commands)
+	g := game.NewGame(client)
+
+	if err := g.Init(); err != nil {
+		t.Fatalf("got error on init: %s", err)
+	}
+	if err := g.SetStartingPosition("START 1,0,NORTH"); err != nil {
+		t.Fatalf("expected nil error, got: %s", err)
+	}
+	if err := g.DoMove("4"); err != nil {
+		t.Fatalf("expected nil error, got: %s", err)
+	}
+	expectedPosition := models.Coordinate{X: 1, Y: 0}
+	if g.GetCurrentPosition() != expectedPosition {
+		t.Fatalf("expected pos %+v, got: %+v", expectedPosition, g.GetCurrentPosition())
+	}
+}
+
+func TestMoveOutOfBoard(t *testing.T) {
+	client := &MockClient{}
+	board := models.Board{
+		Width:     3,
+		Height:    3,
+		Obstacles: []models.Coordinate{},
+	}
+	client.SetBoard(board)
+	commands := []string{
+		"START 1,0,WEST",
+		"MOVE 2",
+	}
+	client.SetCommands(commands)
+	g := game.NewGame(client)
+
+	if err := g.Init(); err != nil {
+		t.Fatalf("got error on init: %s", err)
+	}
+	if err := g.SetStartingPosition("START 1,0,WEST"); err != nil {
+		t.Fatalf("expected nil error, got: %s", err)
+	}
+	if err := g.DoMove("2"); err == nil {
+		t.Fatal("expected error, got nil")
+	}
+}

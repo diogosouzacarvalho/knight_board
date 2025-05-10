@@ -29,7 +29,7 @@ func (g *Game) SetStartingPosition(command string) error {
 		X: int(x),
 		Y: int(y),
 	}
-	direction := values[2]
+	direction := models.Direction(values[2])
 
 	if slices.Contains(g.board.Obstacles, position) {
 		return status.ErrInvalidStartPosition
@@ -44,6 +44,41 @@ func (g *Game) SetStartingPosition(command string) error {
 
 	g.currentPosition = position
 	g.facingDirection = direction
+
+	return nil
+}
+
+func (g *Game) DoMove(partialCommand string) error {
+	targetValue, err := strconv.ParseInt(partialCommand, 10, 16)
+	if err != nil {
+		return err
+	}
+	for i := 0; i < int(targetValue); i++ {
+		nextPosition := g.currentPosition
+		switch g.facingDirection {
+		case models.DirectionEast:
+			nextPosition.X++
+		case models.DirectionWest:
+			nextPosition.X--
+		case models.DirectionNorth:
+			nextPosition.Y++
+		case models.DirectionSouth:
+			nextPosition.Y--
+		default:
+			return status.ErrGeneric
+		}
+
+		if slices.Contains(g.board.Obstacles, nextPosition) {
+			break
+		}
+
+		if nextPosition.X < 0 || nextPosition.Y < 0 || nextPosition.X+1 > g.board.Width ||
+			nextPosition.Y+1 > g.board.Height {
+			return status.ErrOutOfBoard
+		}
+
+		g.currentPosition = nextPosition
+	}
 
 	return nil
 }

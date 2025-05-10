@@ -15,7 +15,7 @@ type Game struct {
 	board           models.Board
 	baseCommands    models.Commands
 	currentPosition models.Coordinate
-	facingDirection string
+	facingDirection models.Direction
 }
 
 func NewGame(client client.GameClient) *Game {
@@ -51,10 +51,11 @@ func (g *Game) Init() error {
 }
 
 func (g *Game) Exec() error {
+	var err error
 	commands := g.baseCommands.Commands
 
 	startCommand := commands[0]
-	if err := g.SetStartingPosition(startCommand); err != nil {
+	if err = g.SetStartingPosition(startCommand); err != nil {
 		fmt.Printf("invalid start position: %s", err)
 		if !errors.Is(err, status.ErrInvalidStartPosition) {
 			err = status.ErrGeneric
@@ -62,5 +63,33 @@ func (g *Game) Exec() error {
 		return err
 	}
 
+	doCommands := commands[1:]
+
+	for len(doCommands) > 0 {
+		currentCommand := doCommands[0]
+		temp := strings.Split(currentCommand, " ")
+		commandType := models.CommandType(temp[0])
+		switch commandType {
+		case models.CommandTypeMove:
+			err = g.DoMove(temp[1])
+		case models.CommandTypeRotate:
+		default:
+			fmt.Printf("invalid command: %s", commandType)
+			err = status.ErrGeneric
+		}
+		if err != nil {
+			return err
+		}
+
+		if len(doCommands) == 1 {
+			break
+		}
+		doCommands = doCommands[1:]
+	}
+
 	return nil
+}
+
+func (g *Game) GetCurrentPosition() models.Coordinate {
+	return g.currentPosition
 }
