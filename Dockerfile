@@ -1,11 +1,9 @@
 FROM golang:1.22
 
+ADD . /app
+
 WORKDIR /app
 
-COPY go.mod ./
+RUN go build -o /knight_board
 
-COPY *.go ./
-
-RUN go build
-
-CMD [ "go", "run", "main.go" ]
+CMD [ "/knight_board" ]
