@@ -15,4 +15,8 @@ func main() {
 	if err := game.Init(); err != nil {
 		panic(err)
 	}
+
+	if err := game.Exec(); err != nil {
+		panic(err)
+	}
 }
