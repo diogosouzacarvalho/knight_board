@@ -1,16 +1,37 @@
 package game
 
 import (
-	"fmt"
+	"errors"
 	"slices"
+	"strconv"
+	"strings"
 
 	"github.com/diogosouzacarvalho/knight_board/internal/models"
 	"github.com/diogosouzacarvalho/knight_board/internal/status"
 )
 
-func (g *Game) SetStartingPoint(position models.Coordinate, direction string) error {
+func (g *Game) SetStartingPosition(command string) error {
+	if !strings.HasPrefix(command, string(models.CommandTypeStart)) {
+		return errors.New("command should be start")
+	}
+
+	temp := strings.Split(command, " ")
+	values := strings.Split(temp[1], ",")
+	x, err := strconv.ParseInt(values[0], 10, 16)
+	if err != nil {
+		return err
+	}
+	y, err := strconv.ParseInt(values[1], 10, 16)
+	if err != nil {
+		return err
+	}
+	position := models.Coordinate{
+		X: int(x),
+		Y: int(y),
+	}
+	direction := values[2]
+
 	if slices.Contains(g.board.Obstacles, position) {
-		fmt.Println("Starting position overlaps with obstacle")
 		return status.ErrInvalidStartPosition
 	}
 

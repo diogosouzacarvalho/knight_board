@@ -4,12 +4,12 @@ type Commands struct {
 	Commands []string `json:"commands"`
 }
 
-type Command string
+type CommandType string
 
 const (
-	CommandMove   Command = "MOVE"
-	CommandRotate Command = "ROTATE"
-	CommandStart  Command = "START"
+	CommandTypeMove   CommandType = "MOVE"
+	CommandTypeRotate CommandType = "ROTATE"
+	CommandTypeStart  CommandType = "START"
 )
 
 type Direction string

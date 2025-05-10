@@ -1,6 +1,7 @@
 package game
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -40,18 +41,26 @@ func (g *Game) Init() error {
 		fmt.Println("invalid commands")
 		return status.ErrGeneric
 	}
-	if !strings.HasPrefix(commands.Commands[0], string(models.CommandStart)) {
+	if !strings.HasPrefix(commands.Commands[0], string(models.CommandTypeStart)) {
 		fmt.Println("first command should be start")
 		return status.ErrGeneric
 	}
 	g.baseCommands = commands
 
-	fmt.Printf("\nBoard: %+v", g.board)
-	fmt.Printf("\nCommands: %+v", g.baseCommands)
-
 	return nil
 }
 
 func (g *Game) Exec() error {
+	commands := g.baseCommands.Commands
+
+	startCommand := commands[0]
+	if err := g.SetStartingPosition(startCommand); err != nil {
+		fmt.Printf("invalid start position: %s", err)
+		if !errors.Is(err, status.ErrInvalidStartPosition) {
+			err = status.ErrGeneric
+		}
+		return err
+	}
+
 	return nil
 }
