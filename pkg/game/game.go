@@ -73,6 +73,7 @@ func (g *Game) Exec() error {
 		case models.CommandTypeMove:
 			err = g.DoMove(temp[1])
 		case models.CommandTypeRotate:
+			err = g.DoRotate(temp[1])
 		default:
 			fmt.Printf("invalid command: %s", commandType)
 			err = status.ErrGeneric
@@ -92,4 +93,8 @@ func (g *Game) Exec() error {
 
 func (g *Game) GetCurrentPosition() models.Coordinate {
 	return g.currentPosition
+}
+
+func (g *Game) GetFacingDirection() models.Direction {
+	return g.facingDirection
 }

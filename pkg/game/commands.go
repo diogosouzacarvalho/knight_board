@@ -82,3 +82,11 @@ func (g *Game) DoMove(partialCommand string) error {
 
 	return nil
 }
+
+func (g *Game) DoRotate(partialCommand string) error {
+	direction := models.Direction(partialCommand)
+
+	g.facingDirection = direction
+
+	return nil
+}
