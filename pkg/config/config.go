@@ -38,3 +38,39 @@ func GetBoard(endpoint string) (models.Board, error) {
 
 	return board, nil
 }
+
+var sampleCommand models.Commands = models.Commands{
+	Commands: []string{
+		"START 1,0,NORTH",
+		"ROTATE SOUTH",
+		"MOVE 3",
+		"ROTATE EAST",
+		"MOVE 5",
+	},
+}
+
+func GetCommands(endpoint string) (models.Commands, error) {
+	if endpoint == "" {
+		return sampleCommand, nil
+	}
+
+	var commands models.Commands
+
+	req, err := http.NewRequest(http.MethodGet, endpoint, nil)
+	if err != nil {
+		return commands, err
+	}
+
+	client := http.Client{}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return commands, err
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&commands); err != nil {
+		return commands, err
+	}
+
+	return commands, nil
+}

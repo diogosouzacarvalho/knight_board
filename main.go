@@ -13,6 +13,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
 	fmt.Println(board)
+
+	commands, err := config.GetCommands(os.Getenv(models.COMMANDS_API))
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(commands)
 }
