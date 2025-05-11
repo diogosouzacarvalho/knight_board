@@ -1,8 +1,6 @@
 package game
 
 import (
-	"errors"
-	"slices"
 	"strconv"
 	"strings"
 
@@ -12,7 +10,7 @@ import (
 
 func (g *Game) SetStartingPosition(command string) error {
 	if !strings.HasPrefix(command, string(models.CommandTypeStart)) {
-		return errors.New("command should be start")
+		return status.ErrGeneric
 	}
 
 	temp := strings.Split(command, " ")
@@ -31,14 +29,11 @@ func (g *Game) SetStartingPosition(command string) error {
 	}
 	direction := models.Direction(values[2])
 
-	if slices.Contains(g.board.Obstacles, position) {
+	if position.CollidesWithObstacle(g.board) {
 		return status.ErrInvalidStartPosition
 	}
 
-	if position.X < 0 ||
-		position.Y < 0 ||
-		position.X+1 > g.board.Width ||
-		position.Y+1 > g.board.Height {
+	if !position.IsValid(g.board) {
 		return status.ErrInvalidStartPosition
 	}
 
@@ -68,12 +63,11 @@ func (g *Game) DoMove(partialCommand string) error {
 			return status.ErrGeneric
 		}
 
-		if slices.Contains(g.board.Obstacles, nextPosition) {
+		if nextPosition.CollidesWithObstacle(g.board) {
 			break
 		}
 
-		if nextPosition.X < 0 || nextPosition.Y < 0 || nextPosition.X+1 > g.board.Width ||
-			nextPosition.Y+1 > g.board.Height {
+		if !nextPosition.IsValid(g.board) {
 			return status.ErrOutOfBoard
 		}
 

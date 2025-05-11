@@ -2,7 +2,6 @@ package game
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/diogosouzacarvalho/knight_board/internal/models"
@@ -24,9 +23,9 @@ func NewGame(client client.GameClient) *Game {
 
 func (g *Game) Init() error {
 	var (
-		board models.Board
+		board    models.Board
 		commands models.Commands
-		err error
+		err      error
 	)
 	if board, err = g.client.GetBoard(); err != nil {
 		return status.ErrGeneric
@@ -53,7 +52,6 @@ func (g *Game) Exec() error {
 
 	startCommand := commands[0]
 	if err = g.SetStartingPosition(startCommand); err != nil {
-		fmt.Printf("invalid start position: %s", err)
 		if !errors.Is(err, status.ErrInvalidStartPosition) {
 			err = status.ErrGeneric
 		}
@@ -76,12 +74,9 @@ func (g *Game) Exec() error {
 			err = status.ErrGeneric
 		}
 		if err != nil {
-			return err
+			return status.ErrGeneric
 		}
 
-		// if len(doCommands) == 1 {
-		// 	break
-		// }
 		doCommands = doCommands[1:]
 	}
 
