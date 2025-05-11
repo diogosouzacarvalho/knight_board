@@ -16,13 +16,13 @@ func main() {
 
 	if err := g.Init(); err != nil {
 		out := models.Output{Status: err.Error()}
-		utils.OutputJSON(out)
+		utils.OutputJSON(os.Stdout, out)
 		return
 	}
 
 	if err := g.Exec(); err != nil {
 		out := models.Output{Status: err.Error()}
-		utils.OutputJSON(out)
+		utils.OutputJSON(os.Stdout, out)
 		return
 	}
 
@@ -35,5 +35,5 @@ func main() {
 		Status: status.StatusSuccess,
 	}
 
-	utils.OutputJSON(out)
+	utils.OutputJSON(os.Stdout, out)
 }

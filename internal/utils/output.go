@@ -3,9 +3,10 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 )
 
-func OutputJSON(data any) {
+func OutputJSON(writer io.Writer, data any) {
 	bytes, _ := json.MarshalIndent(data, "", "\t")
-	fmt.Println(string(bytes))
+	fmt.Fprintln(writer, string(bytes))
 }

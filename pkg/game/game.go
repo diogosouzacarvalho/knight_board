@@ -74,7 +74,7 @@ func (g *Game) Exec() error {
 			err = status.ErrGeneric
 		}
 		if err != nil {
-			return status.ErrGeneric
+			return err
 		}
 
 		doCommands = doCommands[1:]

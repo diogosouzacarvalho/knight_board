@@ -46,7 +46,7 @@ func (g *Game) SetStartingPosition(command string) error {
 func (g *Game) DoMove(partialCommand string) error {
 	targetValue, err := strconv.ParseInt(partialCommand, 10, 16)
 	if err != nil {
-		return err
+		return status.ErrGeneric
 	}
 	for i := 0; i < int(targetValue); i++ {
 		nextPosition := g.currentPosition
