@@ -31,7 +31,7 @@ func (g *Game) Init() error {
 	if board, err = g.client.GetBoard(); err != nil {
 		return status.ErrGeneric
 	}
-	if board.Height < 1 || board.Width < 1 {
+	if !board.IsValid() {
 		return status.ErrGeneric
 	}
 	g.board = board
@@ -39,10 +39,7 @@ func (g *Game) Init() error {
 	if commands, err = g.client.GetCommands(); err != nil {
 		return status.ErrGeneric
 	}
-	if len(commands.Commands) < 1 {
-		return status.ErrGeneric
-	}
-	if !strings.HasPrefix(commands.Commands[0], string(models.CommandTypeStart)) {
+	if !commands.IsValid() {
 		return status.ErrGeneric
 	}
 	g.baseCommands = commands
